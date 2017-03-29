@@ -41,10 +41,12 @@ before_install:
   - SILENT luarocks install cluacov
   - SILENT luarocks install luacov-coveralls
 
+  - SILENT pip install --user cpp-coveralls
+
 # Build MAD:
 install:
   - cd src
-  - make -f Makefile.linux
+  - CFLAGS="-coverage" make -f Makefile.linux
   - cd ..
 
   # Symlink 'mad' in PATH:
@@ -69,3 +71,4 @@ after_success:
   - mv luacov.stats.out ../..
   - cd ../..
   - luacov-coveralls
+  - coveralls -i src -b src -r . --gcov-options '-o build'
