@@ -39,9 +39,6 @@ before_install:
   - SILENT ./tests/travis/build_luarocks.sh
   - SILENT luarocks install luacov
   - SILENT luarocks install cluacov
-  - SILENT luarocks install luacov-coveralls
-
-  - SILENT pip install --user cpp-coveralls
 
 # Build MAD:
 install:
@@ -70,5 +67,7 @@ after_success:
   - sed -rn -e "/[0-9]+:\//{s#:$TRAVIS_BUILD_DIR/#:#;p;n;p}" -i luacov.stats.out
   - mv luacov.stats.out ../..
   - cd ../..
-  - luacov-coveralls
-  - coveralls -i src -b src -r . --gcov-options '-o build'
+
+  - curl -s https://codecov.io/bash -o coverage.sh
+  - bash coverage.sh -Z
+  - bash coverage.sh -Z -s src/build -G src
